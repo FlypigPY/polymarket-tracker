@@ -1,0 +1,619 @@
+/* ============================================================
+   2026 基隆市長選舉 · Polymarket 監控  —  樣式表
+   深色為主、支援日夜切換；配色以候選人所屬政黨區分
+   ============================================================ */
+
+:root {
+  --bg:          #0d1117;
+  --bg-soft:     #161b22;
+  --bg-card:     #161b22;
+  --bg-hover:    #1c2333;
+  --border:      #262d3a;
+  --border-soft: #1e2530;
+  --text:        #e6edf3;
+  --text-dim:    #8b949e;
+  --text-faint:  #6e7681;
+
+  --buy:         #3fb950;
+  --sell:        #f85149;
+  --accent:      #58a6ff;
+  --warn:        #d29922;
+
+  --kmt:         #4a86e8;
+  --kmt-soft:    rgba(74, 134, 232, .14);
+  --dpp:         #35b37e;
+  --dpp-soft:    rgba(53, 179, 126, .14);
+  --tpp:         #4bb8c4;
+  --tpp-soft:    rgba(75, 184, 196, .14);
+  --tbd:         #7d8590;
+  --tbd-soft:    rgba(125, 133, 144, .12);
+
+  --shadow:      0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.2);
+  --radius:      10px;
+}
+
+html[data-theme="light"] {
+  --bg:          #f6f8fa;
+  --bg-soft:     #ffffff;
+  --bg-card:     #ffffff;
+  --bg-hover:    #f0f3f6;
+  --border:      #d8dee4;
+  --border-soft: #e6eaef;
+  --text:        #1f2328;
+  --text-dim:    #59636e;
+  --text-faint:  #818b98;
+
+  --buy:         #1a7f37;
+  --sell:        #cf222e;
+  --accent:      #0969da;
+  --warn:        #9a6700;
+
+  --kmt-soft:    rgba(74, 134, 232, .10);
+  --dpp-soft:    rgba(53, 179, 126, .10);
+  --tpp-soft:    rgba(75, 184, 196, .10);
+  --tbd-soft:    rgba(125, 133, 144, .10);
+
+  --shadow:      0 1px 2px rgba(31,35,40,.08), 0 4px 16px rgba(31,35,40,.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1320px; margin: 0 auto; padding: 0 20px; }
+
+/* ── Header ────────────────────────────────────────────── */
+header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding-top: 14px; padding-bottom: 14px;
+}
+h1 { margin: 0 0 4px; font-size: 19px; font-weight: 650; letter-spacing: .2px; }
+.meta { font-size: 12.5px; color: var(--text-dim); display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.dot { color: var(--text-faint); }
+.auto-refresh { color: var(--text-faint); }
+.header-right { display: flex; gap: 8px; flex-shrink: 0; }
+
+.icon-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 8px; cursor: pointer;
+  width: 34px; height: 34px; font-size: 15px; line-height: 1;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+.icon-btn:hover { background: var(--bg-hover); border-color: var(--accent); }
+.icon-btn:active { transform: scale(.94); }
+.icon-btn.spinning { animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── 縣市頁簽 ──────────────────────────────────────────── */
+.city-tabs-wrap { border-top: 1px solid var(--border-soft); }
+.city-tabs {
+  display: flex; gap: 2px; overflow-x: auto;
+  scrollbar-width: none;              /* 手機上橫向滑動，不顯示捲軸 */
+}
+.city-tabs::-webkit-scrollbar { display: none; }
+
+.city-tab {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-dim); font-family: inherit;
+  font-size: 13.5px; font-weight: 550; white-space: nowrap;
+  padding: 10px 15px 9px;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.city-tab:hover { color: var(--text); background: var(--bg-hover); }
+.city-tab.active {
+  color: var(--accent); border-bottom-color: var(--accent); font-weight: 680;
+}
+
+/* ── 地圖首頁 ──────────────────────────────────────────── */
+.map-home { padding-top: 14px; padding-bottom: 22px; }
+.map-title { margin: 0 0 3px; font-size: 16px; font-weight: 650; text-align: center; }
+.map-sub { margin: 0 0 10px; font-size: 12.5px; color: var(--text-dim); text-align: center; }
+
+.map-wrap {
+  position: relative;
+  margin: 0 auto;
+  /* 台灣本身瘦長，寬度受視窗高度限制才不會超出一個畫面。
+     0.76 是 map-data.js 的 viewBox 長寬比（760 / 1000）。 */
+  max-width: min(760px, calc((100vh - 210px) * 0.76));
+}
+#twMap { width: 100%; height: auto; display: block; }
+
+.county path {
+  fill-rule: evenodd;          /* 讓飛地（臺北市、嘉義市）在外圍縣市上鏤空 */
+  fill: var(--bg-card);
+  stroke: var(--border);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  transition: fill .15s, stroke .15s;
+}
+.county-label {
+  font-size: 15px; font-weight: 600;
+  fill: var(--text-dim);
+  text-anchor: middle; dominant-baseline: middle;
+  pointer-events: none;
+  transition: fill .15s;
+  paint-order: stroke;
+  stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round;
+}
+
+/* 有盤口的縣市：可點，滑過會亮起來 */
+.county.has-event { cursor: pointer; }
+.county.has-event path { fill: var(--bg-hover); stroke: var(--text-faint); }
+.county.has-event:hover path,
+.county.has-event:focus-visible path { fill: var(--accent); stroke: var(--accent); }
+.county-label.hot { fill: #fff; stroke: var(--accent); }
+.county.has-event:focus { outline: none; }
+
+/* 尚未納入監控的縣市：不可點，壓暗 */
+.county.no-event path { fill: var(--bg-soft); stroke: var(--border-soft); opacity: .55; }
+
+.map-tip {
+  position: absolute; z-index: 20; pointer-events: none;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 11px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  font-size: 12.5px; white-space: nowrap;
+}
+.map-tip b { display: block; font-size: 13.5px; }
+.map-tip span { color: var(--text-dim); font-size: 11.5px; }
+
+/* 頁簽列上的「回地圖」 */
+.city-tab.tab-home { font-weight: 650; }
+
+@media (max-width: 720px) {
+  .map-wrap { max-width: 100%; }
+  .county-label { font-size: 19px; }
+}
+
+/* 資料來源徽章 */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 1px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: .3px;
+  border: 1px solid transparent;
+}
+.badge-live     { color: var(--buy);  background: rgba(63,185,80,.13);  border-color: rgba(63,185,80,.35); }
+.badge-snapshot { color: var(--warn); background: rgba(210,153,34,.13); border-color: rgba(210,153,34,.35); }
+.badge-error    { color: var(--sell); background: rgba(248,81,73,.13);  border-color: rgba(248,81,73,.35); }
+.badge-loading  { color: var(--text-dim); background: var(--bg-hover); border-color: var(--border); }
+
+/* 警示條 */
+.notice {
+  margin-top: 14px; padding: 11px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(210,153,34,.35);
+  background: rgba(210,153,34,.10);
+  color: var(--text); font-size: 13px; line-height: 1.65;
+}
+.notice.notice-error { border-color: rgba(248,81,73,.35); background: rgba(248,81,73,.10); }
+.notice b { color: var(--warn); }
+.notice.notice-error b { color: var(--sell); }
+
+/* ── 候選人卡 ──────────────────────────────────────────── */
+.stats {
+  display: grid; gap: 14px; margin-top: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 15px 17px;
+  border-left: 3px solid var(--tbd);
+  box-shadow: var(--shadow);
+}
+.card.kmt { border-left-color: var(--kmt); }
+.card.dpp { border-left-color: var(--dpp); }
+.card.tpp { border-left-color: var(--tpp); }
+.card.tbd { border-left-color: var(--tbd); opacity: .82; }
+
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.cand-name { font-size: 17px; font-weight: 680; }
+.cand-en   { font-size: 11.5px; color: var(--text-faint); font-weight: 400; margin-left: 6px; }
+.party-tag {
+  font-size: 11px; font-weight: 650; padding: 1px 8px; border-radius: 5px;
+  background: var(--tbd-soft); color: var(--tbd); white-space: nowrap;
+}
+.card.kmt .party-tag { background: var(--kmt-soft); color: var(--kmt); }
+.card.dpp .party-tag { background: var(--dpp-soft); color: var(--dpp); }
+.card.tpp .party-tag { background: var(--tpp-soft); color: var(--tpp); }
+
+.odds-row { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; }
+.odds-val { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.odds-lbl { font-size: 12px; color: var(--text-dim); }
+
+.odds-bar { height: 6px; border-radius: 3px; background: var(--border-soft); overflow: hidden; margin-bottom: 12px; }
+.odds-fill { height: 100%; border-radius: 3px; background: var(--tbd); transition: width .5s ease; }
+.card.kmt .odds-fill { background: var(--kmt); }
+.card.dpp .odds-fill { background: var(--dpp); }
+.card.tpp .odds-fill { background: var(--tpp); }
+
+.row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 2.5px 0; }
+.row span { color: var(--text-dim); }
+.row b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.card-foot {
+  margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border-soft);
+  font-size: 11.5px; color: var(--text-faint);
+}
+
+.hidden-note {
+  grid-column: 1 / -1; font-size: 12.5px; color: var(--text-faint);
+  padding: 4px 2px;
+}
+
+/* ── 篩選列 ────────────────────────────────────────────── */
+.filters { margin-top: 20px; }
+.filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 10px; }
+.spacer { flex: 1 1 auto; }
+
+.search-pill {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 999px; padding: 7px 15px;
+  transition: border-color .15s;
+}
+.search-pill:focus-within { border-color: var(--accent); }
+.search-icon { font-size: 13px; opacity: .65; }
+.search-pill input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-size: 13.5px; font-family: inherit;
+}
+.search-pill input::placeholder { color: var(--text-faint); }
+#searchClear {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; font-size: 13px; padding: 0 2px;
+}
+#searchClear:hover { color: var(--text); }
+
+.pill-dropdown { position: relative; }
+.pill-trigger {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 999px;
+  padding: 6px 14px; font-size: 13px; font-family: inherit;
+  cursor: pointer; transition: border-color .15s, background .15s;
+}
+.pill-trigger:hover { background: var(--bg-hover); }
+.pill-dropdown.active .pill-trigger,
+.pill-dropdown.has-value .pill-trigger { border-color: var(--accent); color: var(--accent); }
+.pill-caret { font-size: 11px; opacity: .7; }
+
+.pill-panel {
+  display: none; position: absolute; top: calc(100% + 7px); left: 0; z-index: 60;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px;
+  min-width: 210px; box-shadow: 0 8px 28px rgba(0,0,0,.45);
+}
+.pill-dropdown.active .pill-panel { display: block; }
+
+.check-list { display: flex; flex-direction: column; gap: 2px; max-height: 320px; overflow-y: auto; }
+.check-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 7px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  white-space: nowrap;
+}
+.check-item:hover { background: var(--bg-hover); }
+.check-item input { accent-color: var(--accent); cursor: pointer; margin: 0; }
+.check-item .cnt { color: var(--text-faint); font-size: 11.5px; margin-left: auto; padding-left: 12px; }
+
+.amount-inputs { display: flex; align-items: center; gap: 8px; }
+.amount-inputs input {
+  width: 108px; background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); border-radius: 7px; padding: 6px 9px;
+  font-size: 13px; font-family: inherit; outline: none;
+}
+.amount-inputs input:focus { border-color: var(--accent); }
+.amount-sep { color: var(--text-faint); }
+.panel-hint { font-size: 11.5px; color: var(--text-faint); margin-top: 8px; }
+
+.panel-actions { display: flex; gap: 8px; margin-top: 11px; }
+.btn-reset, .btn-confirm {
+  flex: 1; border-radius: 7px; padding: 6px 10px;
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+  border: 1px solid var(--border); transition: opacity .15s;
+}
+.btn-reset   { background: none; color: var(--text-dim); }
+.btn-reset:hover { background: var(--bg-hover); color: var(--text); }
+.btn-confirm { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+.btn-confirm:hover { opacity: .88; }
+
+.view-switch {
+  display: flex; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 999px; padding: 2px;
+}
+.view-btn {
+  background: none; border: none; color: var(--text-dim);
+  border-radius: 999px; padding: 5px 13px;
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.view-btn:hover { color: var(--text); }
+.view-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+.ghost-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 999px;
+  padding: 6px 14px; font-size: 13px; font-family: inherit; cursor: pointer;
+  transition: border-color .15s, background .15s; white-space: nowrap;
+}
+.ghost-btn:hover { background: var(--bg-hover); border-color: var(--accent); }
+
+/* ── 查詢摘要 ──────────────────────────────────────────── */
+.query-summary {
+  margin-bottom: 4px; padding: 14px 17px;
+  background: var(--bg-card); border: 1px solid var(--accent);
+  border-radius: var(--radius);
+}
+.qs-title { font-size: 13.5px; font-weight: 650; margin-bottom: 9px; }
+.qs-title code {
+  background: var(--bg-hover); padding: 1.5px 7px; border-radius: 5px;
+  font-size: 12.5px; color: var(--accent);
+}
+.qs-grid { display: grid; gap: 10px 22px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.qs-item { font-size: 12.5px; }
+.qs-item .k { color: var(--text-dim); display: block; font-size: 11.5px; }
+.qs-item .v { font-weight: 650; font-size: 15px; font-variant-numeric: tabular-nums; }
+
+/* ── 主區 ──────────────────────────────────────────────── */
+.feed { margin-top: 14px; margin-bottom: 40px; }
+.loading, .empty {
+  text-align: center; padding: 52px 20px;
+  color: var(--text-dim); font-size: 13.5px;
+}
+
+/* 表格 */
+.table-wrap {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  background: var(--bg-soft); color: var(--text-dim);
+  font-weight: 600; font-size: 12px; text-align: left;
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  white-space: nowrap; position: sticky; top: 0;
+}
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { color: var(--text); }
+.sort-icon { opacity: .45; font-size: 10px; margin-left: 3px; }
+thead th.sorted { color: var(--accent); }
+thead th.sorted .sort-icon { opacity: 1; }
+
+tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--bg-hover); }
+tbody tr.is-new { animation: flash 2.4s ease-out; }
+@keyframes flash {
+  0%   { background: rgba(88,166,255,.22); }
+  100% { background: transparent; }
+}
+
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace; font-size: 12px; }
+
+.tag-buy, .tag-sell {
+  display: inline-block; padding: 1px 8px; border-radius: 5px;
+  font-size: 11.5px; font-weight: 650; white-space: nowrap;
+}
+.tag-buy  { color: var(--buy);  background: rgba(63,185,80,.13); }
+.tag-sell { color: var(--sell); background: rgba(248,81,73,.13); }
+
+.tag-yes, .tag-no {
+  display: inline-block; padding: 1px 7px; border-radius: 5px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.tag-yes { color: var(--buy);  background: rgba(63,185,80,.10); }
+.tag-no  { color: var(--sell); background: rgba(248,81,73,.10); }
+
+.cand-chip {
+  display: inline-block; padding: 1px 8px; border-radius: 5px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+  background: var(--tbd-soft); color: var(--tbd);
+}
+.cand-chip.kmt { background: var(--kmt-soft); color: var(--kmt); }
+.cand-chip.dpp { background: var(--dpp-soft); color: var(--dpp); }
+.cand-chip.tpp { background: var(--tpp-soft); color: var(--tpp); }
+
+.trader { display: flex; align-items: center; gap: 7px; }
+.trader-name { font-weight: 550; }
+.trader-anon { color: var(--text-faint); font-style: italic; }
+/* 未具名的錢包一樣連得到 Polymarket 個人頁（那個網址吃的是地址，不是暱稱），
+   所以保留灰斜體的「沒暱稱」語氣，但滑過去要看得出來可以點 */
+a.trader-anon:hover { color: var(--accent); text-decoration: underline; }
+
+a.link { color: var(--accent); text-decoration: none; }
+a.link:hover { text-decoration: underline; }
+
+.copy-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-faint); font-size: 11px; padding: 0 2px;
+  opacity: 0; transition: opacity .15s, color .15s;
+}
+tr:hover .copy-btn, .feed-item:hover .copy-btn, .wallet-item:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { color: var(--accent); }
+.copy-btn.copied { color: var(--buy); opacity: 1; }
+
+/* 動態 feed */
+.feed-list { display: flex; flex-direction: column; gap: 9px; }
+.feed-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-left: 3px solid var(--tbd);
+  border-radius: var(--radius); padding: 12px 15px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+}
+.feed-item.kmt { border-left-color: var(--kmt); }
+.feed-item.dpp { border-left-color: var(--dpp); }
+.feed-item.tpp { border-left-color: var(--tpp); }
+.feed-item.is-new { animation: flash 2.4s ease-out; }
+.feed-main { flex: 1 1 320px; min-width: 0; }
+.feed-line1 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
+.feed-line2 { font-size: 12px; color: var(--text-dim); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.feed-amount { text-align: right; flex: 0 0 auto; }
+.feed-amount .big { font-size: 17px; font-weight: 680; font-variant-numeric: tabular-nums; }
+.feed-amount .sub { font-size: 11.5px; color: var(--text-dim); }
+
+/* 錢包彙總 */
+.wallet-list { display: flex; flex-direction: column; gap: 9px; }
+.wallet-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 13px 16px;
+}
+.wallet-head { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 9px; }
+.wallet-rank {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 6px;
+  background: var(--bg-hover); color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px; font-weight: 680;
+}
+.wallet-item.early .wallet-rank { background: rgba(210,153,34,.16); color: var(--warn); }
+.wallet-name { font-weight: 650; font-size: 14px; }
+.wallet-links { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; }
+/* 帳號建立於本盤開盤之後——為了這場選舉才註冊的新帳號 */
+.wallet-badge.badge-fresh { background: rgba(88,166,255,.16); color: var(--accent); }
+/* 同一地址在多個縣市賭盤操作 */
+.wallet-badge.badge-cross { background: rgba(210,153,34,.16); color: var(--warn); }
+.wallet-cell .v.cross { color: var(--warn); }
+.wallet-badge {
+  font-size: 10.5px; font-weight: 650; padding: 1px 7px; border-radius: 5px;
+  background: rgba(210,153,34,.14); color: var(--warn); white-space: nowrap;
+}
+.wallet-grid { display: grid; gap: 8px 18px; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); }
+.wallet-cell { font-size: 12px; }
+.wallet-cell .k { color: var(--text-dim); display: block; font-size: 11px; }
+.wallet-cell .v { font-weight: 620; font-size: 14px; font-variant-numeric: tabular-nums; }
+.pos { color: var(--buy); }
+.neg { color: var(--sell); }
+
+/* 分頁 */
+.pagination {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 7px; margin-top: 16px; font-size: 13px;
+}
+.page-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 7px;
+  min-width: 33px; padding: 5px 9px;
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+}
+.page-btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--accent); }
+.page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 650; }
+.page-btn:disabled { opacity: .35; cursor: not-allowed; }
+.page-info { color: var(--text-dim); font-size: 12.5px; margin: 0 6px; }
+.page-ellipsis { color: var(--text-faint); padding: 0 2px; }
+.page-size {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 7px; padding: 5px 8px;
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+}
+
+/* Footer */
+footer { border-top: 1px solid var(--border); padding-top: 18px; padding-bottom: 30px; }
+footer p { margin: 0 0 6px; font-size: 12px; color: var(--text-faint); line-height: 1.7; }
+.footer-warn { font-size: 11.5px; }
+
+/* 手機 */
+@media (max-width: 720px) {
+  .container { padding: 0 13px; }
+  h1 { font-size: 16px; }
+  .stats { grid-template-columns: 1fr; }
+  .feed-amount { text-align: left; }
+  thead th, tbody td { padding: 8px 9px; }
+  .view-btn { padding: 5px 10px; font-size: 12px; }
+}
+
+/* 離島縮圖：虛線框 + 說明文字（比例與位置皆非實際） */
+.inset-note { pointer-events: none; }
+.inset-note rect {
+  fill: none; stroke: var(--border);
+  stroke-width: 1; stroke-dasharray: 5 4;
+}
+.inset-note text { font-size: 15px; fill: var(--text-faint); }
+
+/* ── 新進錢包通知頁 ──────────────────────────────────────────
+   跨縣市彙整，不屬於任何一個縣市，所以自成一個 view。
+   表格、分頁、chip 都沿用縣市頁既有的類別，只補這頁特有的部分。 */
+.city-tab.tab-nw { font-weight: 650; }
+.city-tab.tab-nw.active { color: var(--warn); box-shadow: inset 0 -2px 0 var(--warn); }
+
+.nw-view { padding-top: 16px; }
+.nw-head { margin-bottom: 14px; }
+.nw-title { margin: 0 0 4px; font-size: 16px; font-weight: 650; }
+.nw-sub { margin: 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.75; max-width: 780px; }
+.nw-sub b { color: var(--text); }
+
+.nw-filters {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 14px;
+}
+.nw-filters .search-pill { width: auto; flex: 1 1 260px; min-width: 200px; }
+#nwSearchClear {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; font-size: 13px; padding: 0 2px;
+}
+#nwSearchClear:hover { color: var(--text); }
+
+.nw-select {
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+  border-radius: 999px; padding: 6px 12px; font-size: 13px; font-family: inherit;
+  cursor: pointer; outline: none;
+}
+.nw-select:focus { border-color: var(--accent); }
+
+.nw-dates { display: flex; align-items: center; gap: 8px; }
+.nw-dates input {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  border-radius: 7px; padding: 6px 9px; font-size: 13px; font-family: inherit; outline: none;
+}
+.nw-dates input:focus { border-color: var(--accent); }
+
+.nw-check {
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+  font-size: 13px; color: var(--text-dim);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 999px; padding: 6px 13px;
+}
+.nw-check:hover { color: var(--text); background: var(--bg-hover); }
+.nw-check input { accent-color: var(--warn); cursor: pointer; }
+.nw-check:has(input:checked) { border-color: var(--warn); color: var(--warn); }
+
+/* 摘要數字：這頁真正要回答的三個問題 */
+.nw-summary {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+}
+.nw-stat {
+  display: flex; flex-direction: column; gap: 2px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 16px; min-width: 132px;
+}
+.nw-stat-n { font-size: 19px; font-weight: 680; font-variant-numeric: tabular-nums; }
+.nw-stat-l { font-size: 11.5px; color: var(--text-dim); }
+
+@media (max-width: 720px) {
+  .nw-filters .search-pill { flex-basis: 100%; }
+  .nw-dates { flex: 1 1 100%; }
+  .nw-dates input { flex: 1; }
+  .nw-stat { flex: 1 1 calc(50% - 10px); min-width: 0; }
+}
+
+/* 錢包視圖的排序列 */
+.wallet-sort {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 12px;
+}
+.wallet-sort-label { font-size: 12.5px; color: var(--text-dim); }
+@media (max-width: 720px) {
+  .wallet-sort .view-switch { flex-wrap: wrap; border-radius: var(--radius); }
+}
