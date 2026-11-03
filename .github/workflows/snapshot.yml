@@ -73,10 +73,16 @@ jobs:
       # 所以這個檔案存在與否就是「要不要寄信」的判斷依據。
       - name: 讀取通知內容
         id: notify
+        env:
+          HAS_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME != '' }}
         run: |
-          if [ -f new_wallets.html ]; then
+          if [ -f new_wallets.html ] && [ "$HAS_MAIL_USERNAME" = "true" ]; then
             echo "send=true" >> "$GITHUB_OUTPUT"
             echo "subject=$(cat new_wallets_subject.txt)" >> "$GITHUB_OUTPUT"
+          elif [ -f new_wallets.html ]; then
+            # MAIL_USERNAME 還沒設定 secret，先跳過寄信，避免空的寄件帳號讓整個 workflow 標成失敗。
+            echo "send=false" >> "$GITHUB_OUTPUT"
+            echo "有新錢包但 MAIL_USERNAME 未設定，先跳過寄信"
           else
             echo "send=false" >> "$GITHUB_OUTPUT"
             echo "沒有新錢包，不寄信"
